@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./common/bootstrap_css.ejs") %>
+    <style>
+        .layer {
+            position:absolute;
+            top:0;right:0;bottom:0;left:0;
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            z-index: 0;
+        }
+
+        .box-size {
+            width: 50%;
+        }
+
+        #loading {
+            width: 300px;
+            height: 300px;
+            margin-right: 80px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+    <div id="data" hidden><%= req_id %></div>
+    <script>
+        var req_id = document.getElementById("data").innerHTML
+        
+        let socket = io.connect("http://localhost:4002")
+        socket.on("connect", () => {
+            print("Waiting converting server response...")
+
+            socket.emit("regist", req_id)
+            print("Callback regist ok.")
+        })
+        socket.on("callback", (response) => {
+            if(response.is_success) {
+                print("Converting success!")
+                success()
+            } else {
+                print("Converting failed!")
+            }
+        })
+        socket.on("disconnect", () => {
+            print("Server disconnected!!")
+        })
+        socket.on("connect_error", () => {
+            print("Server connect error!!")
+        })
+
+
+        
+        function print(data) {
+            let cont = document.getElementById("cont")
+            cont.innerHTML += "<p>" + data + "</p>"
+        }
+
+        function success() {
+            let resultcont = document.getElementById("result")
+            resultcont.innerHTML += "<a href='/static/"+req_id+".fbx' class='btn btn-link'>FBX Download</a>"
+            resultcont.innerHTML += "<a href='/static/"+req_id+".xml' class='btn btn-link'>Material XML Download</a>"
+        }
+        print("Converting start.")
+    </script>
+  </head>
+  <body>
+    <%- include("./common/header.ejs") %>
+
+      <div class="layer container">
+        <% if(err) { %>
+            <div class="alert alert-danger" role="alert" style="width: 50%">
+                <h4 class="alert-heading">An error occurred.</h4>
+                <p>오류가 발생하였습니다. 메세지는 아래와 같습니다.</p>
+                <p><%= err %></p>
+                <hr>
+                <p class="mb-0"><a href="/" class="btn btn-link">Return to main.</a></p>
+            </div>
+        <% } else { %>
+            <img src="/static/convert.gif" id="loading"/>
+            <div class="alert alert-dark" role="alert" style="width: 50%;">
+                <h4 class="alert-heading">Converting...</h4>
+                <div id="cont">
+
+                </div>
+                <hr>
+                <div id="result">
+
+                </div>
+            </div>
+            
+        <% } %>
+      </div>
+      <%- include("./common/bootstrap_js.ejs") %>
+    </body>
+</html>

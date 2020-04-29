@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <%- include("./common/bootstrap_css.ejs") %>
+    <style>
+        .layer {
+            position:absolute;
+            top:0;right:0;bottom:0;left:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index: 0;
+        }
+
+        .box-size {
+            width: 50%;
+        }
+    </style>
+  </head>
+  <body>
+    <%- include("./common/header.ejs") %>
+
+    <div class="layer">
+      <div class="card box-size">
+          <div class="card-body">
+              <h2>pmx/vmd to FBX converting</h2>
+              <hr /><br />
+              <form action="/convert" method="POST" enctype="multipart/form-data">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Select <b>.pmx</b> file</label>
+                    <input type="file" class="form-control" id="pmxfile_upload" name="pmx_file" accept=".pmx">
+                    <small id="pmxfile_upload" class="form-text text-muted" >.pmx 파일을 업로드 하세요.</small>
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleInputEmail1">Select <b>.vmd</b> file</label>
+                      <input type="file" class="form-control" id="pmxfile_upload" name="vmd_file" accept=".vmd">
+                      <small id="pmxfile_upload" class="form-text text-muted" >선택하지 않을 경우, 애니메이션이 포함되지 않습니다.</small>
+                    </div>
+
+                  <button type="submit" class="btn btn-primary" style="width: 200px">Convert</button>
+              </form>
+          </div>
+        </div>
+      </div>
+
+
+    <%- include("./common/bootstrap_js.ejs") %>
+    </body>
+</html>
